@@ -1,9 +1,15 @@
 package zeller51.goldwars.map;
 
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
 import zeller51.goldwars.entities.Entity;
+import zeller51.goldwars.net.Client;
+import zeller51.goldwars.net.ServerPacketHandler;
+import zeller51.goldwars.net.packet.Packet02CreateMap;
+import zeller51.goldwars.net.packet.Packet03CreateBlock;
+import zeller51.goldwars.net.packet.Packet04MapSent;
 
 public class Map {
 
@@ -82,14 +88,7 @@ public class Map {
 		}
 	}
 
-	public void createBlock(byte[] data) {
-		String[] vars = new String(data).split(":");
-		int block = new Integer(vars[1]).intValue();
-		int bx = new Integer(vars[2]).intValue();
-		int by = new Integer(vars[3]).intValue();
-
-		createBlock(bx, by, block);
-	}
+	int blocksCreated = 0;
 
 	private void createBlock(int x, int y, int block, int index) {
 		switch (block) {
@@ -106,9 +105,12 @@ public class Map {
 			blocks.add(index, new BlockBedrock(x, y));
 			break;
 		}
+		blocksCreated++;
+		System.out.println("\nBlocks Created (Should finish at " + width
+				* height + ") : " + blocksCreated);
 	}
 
-	private void createBlock(int x, int y, int block) {
+	public void createBlock(int x, int y, int block) {
 		createBlock(x, y, block, blocks.size());
 	}
 
@@ -137,6 +139,35 @@ public class Map {
 		int index = getBlockIndex(x, y);
 
 		blocks.remove(index);
+	}
+
+	public void render(Graphics g, int offsetX, int offsetY) {
+		for (Block b : blocks) {
+			b.render(g, offsetX, offsetY);
+		}
+	}
+
+	public void sendToClient(final Client client, final ServerPacketHandler packetHandler) {
+		new Thread() {
+			public void run() {
+				System.out.println("Blocks in 'blocks': " + blocks.size());
+				new Packet02CreateMap(width, height).writeDataTo(packetHandler,
+						client);
+				int blockssent = 0;
+				for (Block b : blocks) {
+					new Packet03CreateBlock(b.getType(), b.x, b.y).writeDataTo(
+							packetHandler, client);
+					blockssent++;
+					try {
+						Thread.sleep(20);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				System.out.println("Blocks sent total: " + blockssent);
+				new Packet04MapSent().writeDataTo(packetHandler, client);
+			}
+		}.start();
 	}
 
 }

@@ -16,11 +16,6 @@ public class BlockStone extends Block {
 	}
 
 	@Override
-	public byte[] getData() {
-		return (":" + Block.STONE + ":" + x + ":" + y).getBytes();
-	}
-
-	@Override
 	public boolean isCollision(int x, int y) {
 		if ((x >= this.x && x < this.x + WIDTH)
 				&& (y >= this.y && y < this.y + HEIGHT)) {
@@ -28,6 +23,11 @@ public class BlockStone extends Block {
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	public int getType() {
+		return BlockAir.STONE;
 	}
 
 }

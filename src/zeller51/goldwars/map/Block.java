@@ -42,6 +42,6 @@ public abstract class Block {
 		}
 	}
 
-	public abstract byte[] getData();
+	public abstract int getType();
 
 }

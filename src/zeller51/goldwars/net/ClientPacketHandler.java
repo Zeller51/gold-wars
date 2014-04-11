@@ -10,8 +10,10 @@ import java.net.UnknownHostException;
 import zeller51.goldwars.Game;
 import zeller51.goldwars.net.packet.Packet;
 import zeller51.goldwars.net.packet.Packet01Disconnect;
+import zeller51.goldwars.net.packet.Packet03CreateBlock;
 import zeller51.goldwars.net.packet.Packet.PacketTypes;
 import zeller51.goldwars.net.packet.Packet00Connect;
+import zeller51.goldwars.net.packet.Packet02CreateMap;
 
 public class ClientPacketHandler extends Thread {
 
@@ -81,9 +83,31 @@ public class ClientPacketHandler extends Thread {
 		case DISCONNECT:
 			packet = new Packet01Disconnect(data);
 			handleDisconnect((Packet01Disconnect) packet, address, port);
-			
+			break;
+		case CREATEMAP:
+			packet = new Packet02CreateMap(data);
+			handleCreateMap((Packet02CreateMap) packet);
+			break;
+		case CREATEBLOCK:
+			packet = new Packet03CreateBlock(data);
+			handleCreateBlock((Packet03CreateBlock) packet);
+			break;
+		case MAPSENT:
+			handleMapSent();
 			break;
 		}
+	}
+
+	private void handleMapSent() {
+		game.mapSent = true;
+	}
+
+	private void handleCreateBlock(Packet03CreateBlock packet) {
+		game.map.createBlock(packet.getType(), packet.getX(), packet.getY());
+	}
+	
+	private void handleCreateMap(Packet02CreateMap packet) {
+		game.createMap(packet.getWidth(), packet.getHeight());
 	}
 
 	private void handleDisconnect(Packet01Disconnect packet, InetAddress address, int port) {

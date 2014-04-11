@@ -16,11 +16,6 @@ public class BlockGold extends Block {
 	}
 
 	@Override
-	public byte[] getData() {
-		return (":" + Block.BEDROCK + ":" + x + ":" + y).getBytes();
-	}
-
-	@Override
 	public boolean isCollision(int x, int y) {
 		if ((x >= this.x && x < this.x + WIDTH)
 				&& (y >= this.y && y < this.y + HEIGHT)) {
@@ -36,4 +31,9 @@ public class BlockGold extends Block {
 		super.destroy(map);
 	}
 
+	@Override
+	public int getType() {
+		return Block.GOLD;
+	}
+	
 }

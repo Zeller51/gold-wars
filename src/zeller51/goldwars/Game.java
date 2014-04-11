@@ -7,8 +7,8 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
+import zeller51.goldwars.map.Map;
 import zeller51.goldwars.net.ClientPacketHandler;
-import zeller51.goldwars.net.packet.Packet;
 import zeller51.goldwars.net.packet.Packet00Connect;
 import zeller51.goldwars.net.packet.Packet01Disconnect;
 
@@ -37,21 +37,23 @@ public class Game extends Canvas implements Runnable {
 	private long lastTimer1 = System.currentTimeMillis();
 
 	private boolean running = false;
-	
+	public boolean mapSent = false;
+
 	private String serverIpAddress;
 	private String username;
-	
+
 	private ClientPacketHandler packetHandler;
 
 	private BufferedImage buffer = new BufferedImage(GAMEWIDTH, GAMEHEIGHT,
 			BufferedImage.TYPE_INT_RGB);
+	public Map map;
 
 	public Game(String serverIpAddress, String username) {
 		this.serverIpAddress = serverIpAddress;
 		this.username = username;
 		setPreferredSize(new Dimension(CANVASWIDTH, CANVASHEIGHT));
 	}
-	
+
 	public void start() {
 		init();
 
@@ -64,20 +66,23 @@ public class Game extends Canvas implements Runnable {
 
 		packetHandler = new ClientPacketHandler(this, serverIpAddress);
 		packetHandler.start();
-		
+
 		Packet00Connect connect = new Packet00Connect(username);
 		connect.writeData(packetHandler);
 	}
-	
+
 	public void exit() {
 		Packet01Disconnect disconnect = new Packet01Disconnect(username);
 		disconnect.writeData(packetHandler);
 		System.exit(0);
 	}
-	
+
 	@Override
 	public void run() {
 		while (running) {
+			if (!mapSent) {
+				return;
+			}
 			long now = System.nanoTime();
 			unprocessed += (now - lastTime) / nsPerTick;
 			lastTime = now;
@@ -113,7 +118,7 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	private void tick() {
-		
+
 	}
 
 	private void render() {
@@ -130,16 +135,18 @@ public class Game extends Canvas implements Runnable {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, GAMEWIDTH, GAMEHEIGHT);
 
-		g.drawImage(
-				Assets.font.createText("UPS: " + dticks),
-				1, GAMEHEIGHT - 7, null);
-		g.drawImage(
-				Assets.font.createText("FPS: " + dframes),
-				36, GAMEHEIGHT - 7, null);
+		g.drawImage(Assets.font.createText("UPS: " + dticks), 1,
+				GAMEHEIGHT - 7, null);
+		g.drawImage(Assets.font.createText("FPS: " + dframes), 36,
+				GAMEHEIGHT - 7, null);
 
 		gf.drawImage(buffer.getScaledInstance(CANVASWIDTH, CANVASHEIGHT, 0), 0,
 				0, null);
 		bs.show();
+	}
+
+	public void createMap(int width, int height) {
+		map = new Map(width, height);
 	}
 
 }
