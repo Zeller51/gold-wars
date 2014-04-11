@@ -19,11 +19,17 @@ public abstract class Block {
 		this.y = y;
 	}
 
-	public abstract void update(Map map);
+	public void update(Map map) {
+		
+	}
 
 	public abstract void render(Graphics g, int offsetX, int offsetY);
+	
+	public void destroy(Map map) {
+		map.changeBlock(x, y, AIR);
+	}
 
-	public boolean isCollision() {
+	public boolean isCollision(int x, int y) {
 		return false;
 	}
 

@@ -110,10 +110,10 @@ public class Game extends Canvas implements Runnable {
 		g.fillRect(0, 0, GAMEWIDTH, GAMEHEIGHT);
 
 		g.drawImage(
-				Assets.font.createText(dticks + " ups  "),
+				Assets.font.createText("UPS: " + dticks),
 				1, GAMEHEIGHT - 7, null);
 		g.drawImage(
-				Assets.font.createText(dframes + " fps"),
+				Assets.font.createText("FPS: " + dframes),
 				36, GAMEHEIGHT - 7, null);
 
 		gf.drawImage(buffer.getScaledInstance(CANVASWIDTH, CANVASHEIGHT, 0), 0,
