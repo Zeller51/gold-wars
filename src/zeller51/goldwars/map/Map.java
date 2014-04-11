@@ -33,7 +33,7 @@ public class Map {
 	public Map(int width, int height) {
 		this(width, height, System.nanoTime());
 	}
-	
+
 	public void update() {
 		for (int i = 0; i < entities.size(); i++) {
 			entities.get(i).update(this);
@@ -73,34 +73,43 @@ public class Map {
 					block = Block.BEDROCK;
 				}
 
-				System.out.print(" "+block);
+				System.out.print(" " + block);
 
 				// Create Block
-				createBlock(block);
+				createBlock((int) w * 8, (int) h * 8, block);
 			}
 			System.out.println();
 		}
 	}
 
-	private void createBlock(int block, int index) {
+	public void createBlock(byte[] data) {
+		String[] vars = new String(data).split(":");
+		int block = new Integer(vars[1]).intValue();
+		int bx = new Integer(vars[2]).intValue();
+		int by = new Integer(vars[3]).intValue();
+
+		createBlock(bx, by, block);
+	}
+
+	private void createBlock(int x, int y, int block, int index) {
 		switch (block) {
 		case Block.AIR:
-			// TODO BlockAir
+			blocks.add(index, new BlockAir(x, y));
 			break;
 		case Block.STONE:
-			// TODO BlockStone
+			blocks.add(index, new BlockStone(x, y));
 			break;
 		case Block.GOLD:
-			// TODO BlockGold
+			blocks.add(index, new BlockGold(x, y));
 			break;
 		case Block.BEDROCK:
-			// TODO BlockBedrock
+			blocks.add(index, new BlockBedrock(x, y));
 			break;
 		}
 	}
 
-	private void createBlock(int block) {
-		createBlock(block, blocks.size());
+	private void createBlock(int x, int y, int block) {
+		createBlock(x, y, block, blocks.size());
 	}
 
 	public Block getBlock(int x, int y) {
@@ -113,13 +122,14 @@ public class Map {
 		return null;
 	}
 
-	private int getBlockIndex(int x, int y) {
+	public int getBlockIndex(int x, int y) {
 		for (int i = 0; i < blocks.size(); i++) {
 			if (blocks.get(i).isBlock(x, y)) {
 				return i;
 			}
 		}
-		System.err.println("Unable to find block index at X:" + x + " Y:" + y + "!");
+		System.err.println("Unable to find block index at X:" + x + " Y:" + y
+				+ "!");
 		return -1;
 	}
 
