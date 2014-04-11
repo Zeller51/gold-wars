@@ -4,10 +4,11 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class GoldWars {
 
-	private static Game game = new Game();
+	private static Game game;
 	private static WindowListener windowListener = new WindowListener() {
 
 		@Override
@@ -41,7 +42,11 @@ public class GoldWars {
 	};
 
 	public static void main(String[] args) {
+		String serverIpAddress = JOptionPane.showInputDialog("Host address");
+		String username = JOptionPane.showInputDialog("Username");
+		
 		JFrame frame = new JFrame(Game.WINDOWNAME);
+		game = new Game(serverIpAddress, username);
 		frame.setMinimumSize(game.getPreferredSize());
 		frame.setPreferredSize(game.getPreferredSize());
 		frame.setMaximumSize(game.getPreferredSize());

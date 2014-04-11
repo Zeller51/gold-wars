@@ -7,6 +7,11 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
+import zeller51.goldwars.net.ClientPacketHandler;
+import zeller51.goldwars.net.packet.Packet;
+import zeller51.goldwars.net.packet.Packet00Connect;
+import zeller51.goldwars.net.packet.Packet01Disconnect;
+
 public class Game extends Canvas implements Runnable {
 
 	private static final long serialVersionUID = 1L;
@@ -31,11 +36,18 @@ public class Game extends Canvas implements Runnable {
 	private long lastTimer1 = System.currentTimeMillis();
 
 	private boolean running = false;
+	
+	private String serverIpAddress;
+	private String username;
+	
+	private ClientPacketHandler packetHandler;
 
 	private BufferedImage buffer = new BufferedImage(GAMEWIDTH, GAMEHEIGHT,
 			BufferedImage.TYPE_INT_RGB);
 
-	public Game() {
+	public Game(String serverIpAddress, String username) {
+		this.serverIpAddress = serverIpAddress;
+		this.username = username;
 		setPreferredSize(new Dimension(CANVASWIDTH, CANVASHEIGHT));
 	}
 	
@@ -49,9 +61,16 @@ public class Game extends Canvas implements Runnable {
 	private void init() {
 		Assets.load();
 
+		packetHandler = new ClientPacketHandler(this, serverIpAddress);
+		packetHandler.start();
+		
+		Packet00Connect connect = new Packet00Connect(username);
+		connect.writeData(packetHandler);
 	}
 	
 	public void exit() {
+		Packet01Disconnect disconnect = new Packet01Disconnect(username);
+		disconnect.writeData(packetHandler);
 		System.exit(0);
 	}
 	
