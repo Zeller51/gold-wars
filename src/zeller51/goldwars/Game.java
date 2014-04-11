@@ -70,7 +70,7 @@ public class Game extends Canvas implements Runnable {
 			}
 
 			try {
-				Thread.sleep(10);
+				Thread.sleep(4);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -110,8 +110,11 @@ public class Game extends Canvas implements Runnable {
 		g.fillRect(0, 0, GAMEWIDTH, GAMEHEIGHT);
 
 		g.drawImage(
-				Assets.font.createText(dticks + " ticks  " + dframes + " fps"),
+				Assets.font.createText(dticks + " ups  "),
 				1, GAMEHEIGHT - 7, null);
+		g.drawImage(
+				Assets.font.createText(dframes + " fps"),
+				36, GAMEHEIGHT - 7, null);
 
 		gf.drawImage(buffer.getScaledInstance(CANVASWIDTH, CANVASHEIGHT, 0), 0,
 				0, null);
