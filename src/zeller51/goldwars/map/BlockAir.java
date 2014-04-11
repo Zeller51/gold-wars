@@ -16,13 +16,13 @@ public class BlockAir extends Block {
 	}
 
 	@Override
-	public byte[] getData() {
-		return (":" + Block.AIR + ":" + x + ":" + y).getBytes();
-	}
-
-	@Override
 	public void destroy(Map map) {
 
+	}
+	
+	@Override
+	public int getType() {
+		return Block.AIR;
 	}
 
 }

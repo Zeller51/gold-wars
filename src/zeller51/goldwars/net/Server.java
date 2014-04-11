@@ -16,7 +16,7 @@ public class Server implements Runnable {
 	private int dticks = 0;
 	private long lastTimer1 = System.currentTimeMillis();
 
-	private Map map;
+	public Map map;
 	private ServerPacketHandler packerHandler;
 
 	public static void main(String[] args) {

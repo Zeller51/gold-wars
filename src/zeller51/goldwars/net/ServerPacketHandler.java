@@ -70,9 +70,11 @@ public class ServerPacketHandler extends Thread {
 
 	private void addConnection(Packet00Connect packet, String hostAddress,
 			int port) {
-		clients.add(new Client(hostAddress, port, packet.getUsername()));
+		Client client = new Client(hostAddress, port, packet.getUsername());
+		clients.add(client);
 		System.out.println(((Packet00Connect) packet).getUsername()
 				+ " has connected from " + hostAddress + " on " + port + ".");
+		server.map.sendToClient(client, this);
 	}
 
 	private void removeConnection(Packet01Disconnect packet) {
