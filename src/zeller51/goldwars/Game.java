@@ -26,6 +26,7 @@ public class Game extends Canvas implements Runnable {
 	public static final int CANVASWIDTH = GAMEWIDTH * GAMESCALE;
 	public static final int CANVASHEIGHT = GAMEHEIGHT * GAMESCALE;
 
+        private long lastFrame = System.currentTimeMillis();
 	private long lastTime = System.nanoTime();
 	private double unprocessed = 0;
 	private double nsPerTick = 1000000000.0 / UPS;
@@ -94,9 +95,10 @@ public class Game extends Canvas implements Runnable {
 				e.printStackTrace();
 			}
 
-			if (shouldRender) {
+			if (System.currentTimeMillis() - lastFrame >= 13) {
 				frames++;
 				render();
+				lastFrame = System.currentTimeMillis();
 			}
 
 			if (System.currentTimeMillis() - lastTimer1 > 1000) {
