@@ -1,8 +1,10 @@
-#   ___________________________________________________
-#  / ____/     / /   /    \/  /  /  / __  / __  / ____/
-# / /_  /  /  / /__ /  /  /  /  /  / __  / _   /___  /
-#/_____/_____/_____/_____/________/_/_/_/_/_\_|_____/
-
+#gold-wars
 ---
+
+###Installation:
+---
+
+Run `ant` from gold-wars directory, then run `java -jar dist/Gold-Wars-(date).jar`.
+
 
 Everything is subject to change and be cleaned :D 
