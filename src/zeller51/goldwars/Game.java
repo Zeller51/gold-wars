@@ -147,7 +147,7 @@ public class Game extends Canvas implements Runnable {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, GAMEWIDTH, GAMEHEIGHT);
 
-		map.render(g, 20, 20);
+		map.render(g, 0, 0);
 
 		g.drawImage(Assets.font.createText("UPS: " + dticks), 1,
 				GAMEHEIGHT - 7, null);
