@@ -34,7 +34,7 @@ public class ServerPacketHandler extends Thread {
 
 	public void run() {
 		while (true) {
-			byte[] data = new byte[16384];
+			byte[] data = new byte[Packet.SIZE];
 			DatagramPacket packet = new DatagramPacket(data, data.length);
 			try {
 				socket.receive(packet);

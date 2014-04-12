@@ -7,16 +7,12 @@ import java.util.List;
 import zeller51.goldwars.entities.Entity;
 import zeller51.goldwars.net.Client;
 import zeller51.goldwars.net.ServerPacketHandler;
+import zeller51.goldwars.net.packet.Packet;
 import zeller51.goldwars.net.packet.Packet02CreateMap;
-import zeller51.goldwars.net.packet.Packet03CreateBlock;
+import zeller51.goldwars.net.packet.Packet03SendChunk;
 import zeller51.goldwars.net.packet.Packet04MapSent;
 
 public class Map {
-
-	public static void main(String[] args) {
-		Map m = new Map(48, 48);
-		m.generateMap();
-	}
 
 	private final float CAVEFREQUENCY = 2.0f;
 	private final float GOLDFREQUENCY = 5.0f;
@@ -147,27 +143,49 @@ public class Map {
 		}
 	}
 
-	public void sendToClient(final Client client, final ServerPacketHandler packetHandler) {
+	public void sendToClient(Client client, ServerPacketHandler packetHandler) {
+		String map = "";
+		for (Block b : blocks) {
+			map = map + (":" + b.getType() + ":" + b.x + ":" + b.y);
+		}
+		map = map.substring(1);
+		splitAndSendMapPackets(map, packetHandler, client);
+	}
+
+	private void splitAndSendMapPackets(final String map,
+			final ServerPacketHandler packetHandler, final Client client) {
 		new Thread() {
-			public void run() {
-				System.out.println("Blocks in 'blocks': " + blocks.size());
-				new Packet02CreateMap(width, height).writeDataTo(packetHandler,
-						client);
-				int blockssent = 0;
-				for (Block b : blocks) {
-					new Packet03CreateBlock(b.getType(), b.x, b.y).writeDataTo(
-							packetHandler, client);
-					blockssent++;
+			public void start() {
+				new Packet02CreateMap(width, height).writeDataTo(packetHandler, client);
+				int length = map.getBytes().length;
+				int dataSize = Packet.SIZE - 3;
+				for (int i = 0; i < length / dataSize; i++) {
+					new Packet03SendChunk(map.substring(i * dataSize, i
+							* dataSize + dataSize)).writeDataTo(packetHandler,
+							client);
+					// Should be replaced
+					// Pauses between sending packets so to not overload client
 					try {
-						Thread.sleep(20);
+						Thread.sleep(50);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
-				System.out.println("Blocks sent total: " + blockssent);
 				new Packet04MapSent().writeDataTo(packetHandler, client);
 			}
 		}.start();
 	}
 
+	public void addChunks(String mapData) {
+		String[] data = mapData.split(":");
+
+		System.out.println("Adding Chunks!");
+		for (int i = 0; i < data.length / 3; i++) {
+			createBlock(Integer.parseInt(data[i * 3 + 1]),
+					Integer.parseInt(data[i * 3 + 2]),
+					Integer.parseInt(data[i * 3]));
+			System.out.println("Blocks added so far: " + i);
+		}
+		System.out.println("Done Adding Chunks!");
+	}
 }

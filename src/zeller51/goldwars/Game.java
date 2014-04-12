@@ -26,7 +26,7 @@ public class Game extends Canvas implements Runnable {
 	public static final int CANVASWIDTH = GAMEWIDTH * GAMESCALE;
 	public static final int CANVASHEIGHT = GAMEHEIGHT * GAMESCALE;
 
-        private long lastFrame = System.currentTimeMillis();
+	private long lastFrame = System.currentTimeMillis();
 	private long lastTime = System.nanoTime();
 	private double unprocessed = 0;
 	private double nsPerTick = 1000000000.0 / UPS;
@@ -80,29 +80,34 @@ public class Game extends Canvas implements Runnable {
 	@Override
 	public void run() {
 		while (running) {
-			if (!mapSent) {
-				return;
-			}
 			long now = System.nanoTime();
 			unprocessed += (now - lastTime) / nsPerTick;
 			lastTime = now;
 			boolean shouldRender = true;
 			while (unprocessed >= 1) {
 				ticks++;
-				tick();
+				if (mapSent) {
+					tick();
+				} else {
+					tickWaiting();
+				}
 				unprocessed -= 1;
 				shouldRender = true;
 			}
 
 			try {
-				Thread.sleep(4);
+				Thread.sleep(10);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 
 			if (System.currentTimeMillis() - lastFrame >= 13) {
 				frames++;
-				render();
+				if (mapSent) {
+					render();
+				} else {
+					renderWaiting();
+				}
 				lastFrame = System.currentTimeMillis();
 			}
 
@@ -121,6 +126,10 @@ public class Game extends Canvas implements Runnable {
 
 	}
 
+	private void tickWaiting() {
+
+	}
+
 	private void render() {
 		BufferStrategy bs = getBufferStrategy();
 		if (bs == null) {
@@ -134,6 +143,34 @@ public class Game extends Canvas implements Runnable {
 
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, GAMEWIDTH, GAMEHEIGHT);
+
+		map.render(g, 0, 0);
+
+		g.drawImage(Assets.font.createText("UPS: " + dticks), 1,
+				GAMEHEIGHT - 7, null);
+		g.drawImage(Assets.font.createText("FPS: " + dframes), 36,
+				GAMEHEIGHT - 7, null);
+
+		gf.drawImage(buffer.getScaledInstance(CANVASWIDTH, CANVASHEIGHT, 0), 0,
+				0, null);
+		bs.show();
+	}
+
+	private void renderWaiting() {
+		BufferStrategy bs = getBufferStrategy();
+		if (bs == null) {
+			createBufferStrategy(3);
+			requestFocus();
+			return;
+		}
+
+		Graphics gf = bs.getDrawGraphics();
+		Graphics g = buffer.getGraphics();
+
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, GAMEWIDTH, GAMEHEIGHT);
+
+		g.drawImage(Assets.font.createText("Waiting for map!"), 2, 2, null);
 
 		g.drawImage(Assets.font.createText("UPS: " + dticks), 1,
 				GAMEHEIGHT - 7, null);

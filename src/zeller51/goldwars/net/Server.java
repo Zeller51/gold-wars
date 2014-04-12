@@ -10,11 +10,6 @@ public class Server implements Runnable {
 	private long lastTime = System.nanoTime();
 	private double unprocessed = 0;
 	private double nsPerTick = 1000000000.0 / UPS;
-	private int frames = 0;
-	private int ticks = 0;
-	private int dframes = 0;
-	private int dticks = 0;
-	private long lastTimer1 = System.currentTimeMillis();
 
 	public Map map;
 	private ServerPacketHandler packerHandler;
@@ -36,7 +31,6 @@ public class Server implements Runnable {
 			unprocessed += (now - lastTime) / nsPerTick;
 			lastTime = now;
 			while (unprocessed >= 1) {
-				ticks++;
 				tick();
 				unprocessed -= 1;
 			}
@@ -45,14 +39,6 @@ public class Server implements Runnable {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}
-
-			if (System.currentTimeMillis() - lastTimer1 > 1000) {
-				lastTimer1 += 1000;
-				dframes = frames;
-				dticks = ticks;
-				frames = 0;
-				ticks = 0;
 			}
 		}
 	}

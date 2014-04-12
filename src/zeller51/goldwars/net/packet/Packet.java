@@ -7,7 +7,7 @@ import zeller51.goldwars.net.ServerPacketHandler;
 public abstract class Packet {
 
 	public static enum PacketTypes {
-		INVALID(-1), CONNECT(00), DISCONNECT(01), CREATEMAP(02), CREATEBLOCK(03), MAPSENT(
+		INVALID(-1), CONNECT(00), DISCONNECT(01), CREATEMAP(02), SENDCHUNK(03), MAPSENT(
 				04);
 
 		private int packetId;
@@ -20,6 +20,8 @@ public abstract class Packet {
 			return packetId;
 		}
 	}
+
+	public static final int SIZE = 512;
 
 	public byte packetId;
 	protected byte[] data;
