@@ -14,6 +14,7 @@ import zeller51.goldwars.net.packet.Packet00Connect;
 import zeller51.goldwars.net.packet.Packet01Disconnect;
 import zeller51.goldwars.net.packet.Packet02CreateMap;
 import zeller51.goldwars.net.packet.Packet03SendChunk;
+import zeller51.goldwars.net.packet.Packet05BlockChange;
 
 public class ClientPacketHandler extends Thread {
 
@@ -95,7 +96,15 @@ public class ClientPacketHandler extends Thread {
 		case MAPSENT:
 			handleMapSent();
 			break;
+		case BLOCKCHANGE:
+			packet = new Packet05BlockChange(data);
+			handleBlockChange((Packet05BlockChange) packet);
+			break;
 		}
+	}
+
+	private void handleBlockChange(Packet05BlockChange packet) {
+		game.map.changeBlock(packet.getX(), packet.getY(), packet.getType());
 	}
 
 	private void handleSentChunk(Packet03SendChunk packet) {

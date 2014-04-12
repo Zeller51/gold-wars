@@ -12,6 +12,7 @@ import zeller51.goldwars.net.packet.Packet;
 import zeller51.goldwars.net.packet.Packet.PacketTypes;
 import zeller51.goldwars.net.packet.Packet00Connect;
 import zeller51.goldwars.net.packet.Packet01Disconnect;
+import zeller51.goldwars.net.packet.Packet05BlockChange;
 
 public class ServerPacketHandler extends Thread {
 
@@ -65,7 +66,16 @@ public class ServerPacketHandler extends Thread {
 			packet = new Packet01Disconnect(data);
 			removeConnection(((Packet01Disconnect) packet));
 			break;
+		case BLOCKCHANGE:
+			packet = new Packet05BlockChange(data);
+			handleBlockChange((Packet05BlockChange) packet);
+			break;
 		}
+	}
+
+	private void handleBlockChange(Packet05BlockChange packet) {
+		server.map.changeBlock(packet.getX(), packet.getY(), packet.getType());
+		packet.writeData(this);
 	}
 
 	private void addConnection(Packet00Connect packet, String hostAddress,

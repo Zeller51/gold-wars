@@ -81,8 +81,6 @@ public class Map {
 		}
 	}
 
-	int blocksCreated = 0;
-
 	private void createBlock(int x, int y, int block, int index) {
 		switch (block) {
 		case Block.AIR:
@@ -98,9 +96,6 @@ public class Map {
 			blocks.add(index, new BlockBedrock(x, y));
 			break;
 		}
-		blocksCreated++;
-		System.out.println("Created block #" + blocksCreated + " at " + x + ","
-				+ y);
 	}
 
 	public void createBlock(int x, int y, int block) {
@@ -132,6 +127,7 @@ public class Map {
 		int index = getBlockIndex(x, y);
 
 		blocks.remove(index);
+		createBlock(x, y, block, index);
 	}
 
 	public void render(Graphics g, int offsetX, int offsetY) {
@@ -160,8 +156,6 @@ public class Map {
 				int packets = (int) Math.ceil((double) length
 						/ (double) dataSize);
 				int dataToGo = length;
-				System.out.print("Sending " + packets + " chunks to "
-						+ client.ipAddress);
 				for (int i = 0; i < packets; i++) {
 					if (dataToGo >= dataSize) {
 						new Packet03SendChunk(map.substring(i * dataSize, i
