@@ -75,12 +75,9 @@ public class Map {
 					block = Block.BEDROCK;
 				}
 
-				System.out.print(" " + block);
-
 				// Create Block
 				createBlock((int) w * 8, (int) h * 8, block);
 			}
-			System.out.println();
 		}
 	}
 
@@ -102,8 +99,8 @@ public class Map {
 			break;
 		}
 		blocksCreated++;
-		System.out.println("\nBlocks Created (Should finish at " + width
-				* height + ") : " + blocksCreated);
+		System.out.println("Created block #" + blocksCreated + " at " + x + ","
+				+ y);
 	}
 
 	public void createBlock(int x, int y, int block) {
@@ -156,13 +153,26 @@ public class Map {
 			final ServerPacketHandler packetHandler, final Client client) {
 		new Thread() {
 			public void start() {
-				new Packet02CreateMap(width, height).writeDataTo(packetHandler, client);
+				new Packet02CreateMap(width, height).writeDataTo(packetHandler,
+						client);
 				int length = map.getBytes().length;
 				int dataSize = Packet.SIZE - 3;
-				for (int i = 0; i < length / dataSize; i++) {
-					new Packet03SendChunk(map.substring(i * dataSize, i
-							* dataSize + dataSize)).writeDataTo(packetHandler,
-							client);
+				int packets = (int) Math.ceil((double) length
+						/ (double) dataSize);
+				int dataToGo = length;
+				System.out.print("Sending " + packets + " chunks to "
+						+ client.ipAddress);
+				for (int i = 0; i < packets; i++) {
+					if (dataToGo >= dataSize) {
+						new Packet03SendChunk(map.substring(i * dataSize, i
+								* dataSize + dataSize)).writeDataTo(
+								packetHandler, client);
+						dataToGo -= dataSize;
+					} else {
+						new Packet03SendChunk(map.substring(i * dataSize, i
+								* dataSize + dataToGo)).writeDataTo(
+								packetHandler, client);
+					}
 					// Should be replaced
 					// Pauses between sending packets so to not overload client
 					try {
@@ -179,13 +189,10 @@ public class Map {
 	public void addChunks(String mapData) {
 		String[] data = mapData.split(":");
 
-		System.out.println("Adding Chunks!");
 		for (int i = 0; i < data.length / 3; i++) {
 			createBlock(Integer.parseInt(data[i * 3 + 1]),
 					Integer.parseInt(data[i * 3 + 2]),
 					Integer.parseInt(data[i * 3]));
-			System.out.println("Blocks added so far: " + i);
 		}
-		System.out.println("Done Adding Chunks!");
 	}
 }

@@ -19,9 +19,12 @@ public class Game extends Canvas implements Runnable {
 	public static final int UPS = 60;
 
 	public static final String WINDOWNAME = "Gold Wars";
-	public static final int GAMEWIDTH = 160;
-	public static final int GAMEHEIGHT = 100;
-	public static final int GAMESCALE = 4;
+	//public static final int GAMEWIDTH = 160;
+	//public static final int GAMEHEIGHT = 100;
+	//public static final int GAMESCALE = 4;
+	public static final int GAMEWIDTH = 512;
+	public static final int GAMEHEIGHT = 512;
+	public static final int GAMESCALE = 1;
 
 	public static final int CANVASWIDTH = GAMEWIDTH * GAMESCALE;
 	public static final int CANVASHEIGHT = GAMEHEIGHT * GAMESCALE;
@@ -96,7 +99,7 @@ public class Game extends Canvas implements Runnable {
 			}
 
 			try {
-				Thread.sleep(10);
+				Thread.sleep(2);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -144,7 +147,7 @@ public class Game extends Canvas implements Runnable {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, GAMEWIDTH, GAMEHEIGHT);
 
-		map.render(g, 0, 0);
+		map.render(g, 20, 20);
 
 		g.drawImage(Assets.font.createText("UPS: " + dticks), 1,
 				GAMEHEIGHT - 7, null);

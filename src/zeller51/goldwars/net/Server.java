@@ -44,7 +44,7 @@ public class Server implements Runnable {
 	}
 
 	private void init() {
-		map = new Map(48, 48);
+		map = new Map(16, 16);
 		map.generateMap();
 
 		packerHandler = new ServerPacketHandler(this, PORT);
