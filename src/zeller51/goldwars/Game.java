@@ -52,6 +52,8 @@ public class Game extends Canvas implements Runnable {
 	private String lobbyUsername = "";
 	private boolean lobbyBlink = false;
 	private int lobbyBlinkTimer = 0;
+        
+        private boolean lobbyUsernameEmpty = false;
 
 	private ClientPacketHandler packetHandler;
 
@@ -340,7 +342,13 @@ public class Game extends Canvas implements Runnable {
 			break;
 		case 2:
 			if (Keyboard.clicked("ENTER")) {
+			    if (lobbyUsername.length() > 0) {
 				connect();
+                            } else {
+				lobbyUsernameEmpty = true;
+
+			    }
+
 			}
 			break;
 		}
@@ -388,6 +396,7 @@ public class Game extends Canvas implements Runnable {
 			break;
 		}
 
+
 		g.drawImage(Assets.font.createText("UPS: " + dticks), 1,
 				GAMEHEIGHT - 7, null);
 		g.drawImage(Assets.font.createText("FPS: " + dframes), 36,
@@ -413,6 +422,11 @@ public class Game extends Canvas implements Runnable {
 				break;
 			}
 		}
+
+		if (lobbyUsernameEmpty) {
+		    g.drawImage(Assets.font.createText("Error: Empty username"), 9, 30, null);
+		}
+
 
 		g.drawImage(Assets.font.createText("ip:" + lobbyIp), 9, 2, null);
 
