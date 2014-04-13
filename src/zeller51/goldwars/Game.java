@@ -48,7 +48,7 @@ public class Game extends Canvas implements Runnable {
 
 	private int lobbySelection = 0;
 
-	private String lobbyIp = "";
+	private String lobbyIp = "localhost";
 	private String lobbyUsername = "";
 	private boolean lobbyBlink = false;
 	private int lobbyBlinkTimer = 0;
@@ -100,10 +100,10 @@ public class Game extends Canvas implements Runnable {
 				e.printStackTrace();
 			}
 
-			if (System.currentTimeMillis() - lastFrame >= 13) {
+			if (System.currentTimeMillis() - lastFrame >= 16) {
 				frames++;
-				render();
 				lastFrame = System.currentTimeMillis();
+				render();
 			}
 
 			if (System.currentTimeMillis() - lastTimer1 > 1000) {
@@ -197,9 +197,62 @@ public class Game extends Canvas implements Runnable {
 				lobbyIp = lobbyIp + "9";
 			if (Keyboard.clicked("PERIOD"))
 				lobbyIp = lobbyIp + ".";
+			if (Keyboard.clicked("a"))
+				lobbyIp = lobbyIp + "a";
+			if (Keyboard.clicked("b"))
+				lobbyIp = lobbyIp + "b";
+			if (Keyboard.clicked("c"))
+				lobbyIp = lobbyIp + "c";
+			if (Keyboard.clicked("d"))
+				lobbyIp = lobbyIp + "d";
+			if (Keyboard.clicked("e"))
+				lobbyIp = lobbyIp + "e";
+			if (Keyboard.clicked("f"))
+				lobbyIp = lobbyIp + "f";
+			if (Keyboard.clicked("g"))
+				lobbyIp = lobbyIp + "g";
+			if (Keyboard.clicked("h"))
+				lobbyIp = lobbyIp + "h";
+			if (Keyboard.clicked("i"))
+				lobbyIp = lobbyIp + "i";
+			if (Keyboard.clicked("j"))
+				lobbyIp = lobbyIp + "j";
+			if (Keyboard.clicked("k"))
+				lobbyIp = lobbyIp + "k";
+			if (Keyboard.clicked("l"))
+				lobbyIp = lobbyIp + "l";
+			if (Keyboard.clicked("m"))
+				lobbyIp = lobbyIp + "m";
+			if (Keyboard.clicked("n"))
+				lobbyIp = lobbyIp + "n";
+			if (Keyboard.clicked("o"))
+				lobbyIp = lobbyIp + "o";
+			if (Keyboard.clicked("p"))
+				lobbyIp = lobbyIp + "p";
+			if (Keyboard.clicked("q"))
+				lobbyIp = lobbyIp + "q";
+			if (Keyboard.clicked("r"))
+				lobbyIp = lobbyIp + "r";
+			if (Keyboard.clicked("s"))
+				lobbyIp = lobbyIp + "s";
+			if (Keyboard.clicked("t"))
+				lobbyIp = lobbyIp + "t";
+			if (Keyboard.clicked("u"))
+				lobbyIp = lobbyIp + "u";
+			if (Keyboard.clicked("v"))
+				lobbyIp = lobbyIp + "v";
+			if (Keyboard.clicked("w"))
+				lobbyIp = lobbyIp + "w";
+			if (Keyboard.clicked("x"))
+				lobbyIp = lobbyIp + "x";
+			if (Keyboard.clicked("y"))
+				lobbyIp = lobbyIp + "y";
+			if (Keyboard.clicked("z"))
+				lobbyIp = lobbyIp + "z";
 			if (Keyboard.clicked("BACKSPACE")) {
 				if (lobbyIp.length() > 0) {
-					lobbyIp = lobbyIp.substring(0, lobbyIp.length() - 1);
+					lobbyIp = lobbyIp.substring(0,
+						  lobbyIp.length() - 1);
 				}
 			}
 			break;
@@ -350,13 +403,13 @@ public class Game extends Canvas implements Runnable {
 		if (lobbyBlink) {
 			switch (lobbySelection) {
 			case 0:
-				g.fillRect(2, 3, 5, 5);
+				g.fillRect(lobbyIp.length() * 5 + 18, 3, 5, 5);
 				break;
 			case 1:
-				g.fillRect(2, 11, 5, 5);
+				g.fillRect(lobbyUsername.length() * 5 + 53, 11, 5, 5);
 				break;
 			case 2:
-				g.fillRect(2, 19, 5, 5);
+				g.fillRect(47, 19, 5, 5);
 				break;
 			}
 		}
